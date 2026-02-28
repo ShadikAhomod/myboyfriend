@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be My Boyfriend 💙</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(135deg, #5ee7df, #3a7bd5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: background 1s ease;
+}
+
+.container {
+  width: 90%;
+  max-width: 480px;
+  padding: 2.6rem;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(18px);
+  border-radius: 28px;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.18);
+  color: white;
+}
+
+h1 {
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
+}
+
+.buttons {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  height: 80px;            /* fixed visible zone */
+  overflow: visible;       /* allow movement but not disappearance */
+}
+
+button {
+  padding: .9rem 2.4rem;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform .35s ease, box-shadow .35s ease;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(0,0,0,.25);
+}
+
+.yes {
+  background: white;
+  color: #3a7bd5;
+}
+
+.no {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(80px); /* starts next to YES */
+  background: rgba(255,255,255,0.9);
+  color: #3a7bd5;
+  border-radius: 30px;
+  transition: left .35s ease, top .35s ease;
+}
+
+.hint {
+  margin-top: 2.4rem;
+  opacity: .85;
+}
+
+.screen {
+  display: none;
+  animation: fadeUp .7s ease forwards;
+}
+
+.screen.active {
+  display: block;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+ul {
+  text-align: left;
+  margin: 1.5rem 0;
+}
+
+ul li {
+  margin-bottom: .8rem;
+  line-height: 1.45;
+}
+
+/* Floating hearts */
+.heart {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: rgba(255,255,255,.35);
+  transform: rotate(45deg);
+  animation: float 14s infinite ease-in-out;
+}
+
+.heart::before,
+.heart::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: rgba(255,255,255,.35);
+  border-radius: 50%;
+}
+
+.heart::before { top: -8px; }
+.heart::after { left: -8px; }
+
+@keyframes float {
+  from { transform: translateY(100vh) rotate(45deg); }
+  to { transform: translateY(-120vh) rotate(45deg); }
+}
+
+/* Confetti */
+.confetti {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  background: white;
+  animation: confetti 5s linear forwards;
+}
+
+@keyframes confetti {
+  to {
+    transform: translateY(120vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.gif {
+  width: 200px;
+  margin: 1.5rem auto;
+}
+</style>
+</head>
+
+<body>
+
+<!-- AUDIO -->
+<audio id="popSound" src="https://assets.mixkit.co/sfx/preview/mixkit-soft-click-1123.mp3"></audio>
+<audio id="chimeSound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3"></audio>
+
+<script>
+/* Custom Name */
+const NAME = "Rup";
+
+/* Floating hearts creation */
+const hearts = [];
+for (let i = 0; i < 14; i++) {
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.style.left = Math.random() * 100 + "vw";
+  h.style.animationDelay = Math.random() * 8 + "s";
+  document.body.appendChild(h);
+  hearts.push(h);
+}
+
+/* Cursor reactive hearts */
+document.addEventListener("mousemove", e => {
+  hearts.forEach((h, i) => {
+    const speed = (i + 1) * 0.015;
+    h.style.transform =
+      `translate(${e.clientX * speed}px, ${e.clientY * speed}px) rotate(45deg)`;
+  });
+});
+</script>
+
+<div class="container">
+
+  <!-- SCREEN 1 -->
+  <div id="screen1" class="screen active">
+    <h1>Will you be my Boyfriend, <span id="name"></span>?</h1>
+
+    <div class="buttons">
+      <button class="yes" onclick="yesFirst()">YES</button>
+      <button class="no" id="noBtn">NO 💔</button>
+    </div>
+
+    <p class="hint">Hint: The ‘No’ button is a bit shy… 😏</p>
+  </div>
+
+  <!-- SCREEN 2 -->
+  <div id="screen2" class="screen">
+    <h1>By clicking YES you agree to:</h1>
+
+    <ul>
+      <li>Unlimited cuddles, surprise hugs & soft kisses</li>
+      <li>Random chocolates, stolen hoodies & shared desserts</li>
+      <li>Listening, understanding & never invalidating your feelings</li>
+      <li>Growing together — dreams, struggles & everything in between</li>
+      <li>Being deeply loved by someone who’s serious about you</li>
+    </ul>
+
+    <p>Effective immediately!</p>
+    <button class="yes" onclick="yesFinal()">YES</button>
+  </div>
+
+  <!-- SCREEN 3 -->
+  <div id="screen3" class="screen">
+    <h1>Yay! 🎉<br>Good Choice!</h1>
+
+    <img class="gif"
+      src="https://media.giphy.com/media/LmNwrBhejkK9EFP504/giphy.gif"
+      alt="Celebration">
+
+    <p>That’s the best decision you have ever made! ❤️</p>
+  </div>
+
+</div>
+
+<script>
+document.getElementById("name").textContent = NAME;
+
+const noBtn = document.getElementById("noBtn");
+const pop = document.getElementById("popSound");
+const chime = document.getElementById("chimeSound");
+
+const sass = [
+  "NO 💔",
+  "Still NO? 😐",
+  "Wow. Cold. 🥲",
+  "Okay this is rude 😭",
+  "Just say YES already 😤"
+];
+
+const gradients = [
+  "linear-gradient(135deg, #5ee7df, #3a7bd5)",
+  "linear-gradient(135deg, #43cea2, #185a9d)",
+  "linear-gradient(135deg, #56ccf2, #2f80ed)",
+  "linear-gradient(135deg, #6dd5ed, #2193b0)"
+];
+
+let noCount = 0;
+
+noBtn.addEventListener("mouseenter", () => {
+  const padding = 20;
+  const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+  const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+  noBtn.style.left = Math.random() * maxX + "px";
+  noBtn.style.top = Math.random() * maxY + "px";
+});
+
+noBtn.addEventListener("click", () => {
+  pop.play();
+  noCount = Math.min(noCount + 1, sass.length - 1);
+  noBtn.textContent = sass[noCount];
+  document.body.style.background =
+    gradients[Math.floor(Math.random() * gradients.length)];
+});
+
+function yesFirst() {
+  pop.play();
+  screen1.classList.remove("active");
+  screen2.classList.add("active");
+}
+
+function yesFinal() {
+  chime.play();
+  screen2.classList.remove("active");
+
+  for (let i = 0; i < 120; i++) {
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random() * 100 + "vw";
+    c.style.animationDelay = Math.random() * 2 + "s";
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+
+  setTimeout(() => screen3.classList.add("active"), 400);
+}
+const buttonZone = document.querySelector(".buttons");
+
+function moveNoSafely() {
+  const zone = buttonZone.getBoundingClientRect();
+  const btn = noBtn.getBoundingClientRect();
+
+  const padding = 10;
+
+  const maxX = zone.width - btn.width - padding;
+  const maxY = zone.height - btn.height - padding;
+
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
+
+  // Clamp values (absolute safety)
+  const safeX = Math.max(padding, Math.min(x, maxX));
+  const safeY = Math.max(0, Math.min(y, maxY));
+
+  noBtn.style.left = `${safeX}px`;
+  noBtn.style.top = `${safeY}px`;
+}
+noBtn.addEventListener("mouseenter", moveNoSafely);
+function resetNoPosition() {
+  noBtn.style.left = "50%";
+  noBtn.style.top = "0";
+  noBtn.style.transform = "translateX(80px)";
+}
+
+window.addEventListener("resize", resetNoPosition);
+</script>
+
+</body>
+</html>
