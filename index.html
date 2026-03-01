@@ -25,6 +25,7 @@ body {
 }
 
 .container {
+  position: relative; /* REQUIRED */
   width: 90%;
   max-width: 480px;
   padding: 2.6rem;
@@ -72,14 +73,11 @@ button:hover {
 }
 
 .no {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(80px); /* starts next to YES */
+  position: absolute; /* move relative to container */
+  border-radius: 30px;
   background: rgba(255,255,255,0.9);
   color: #3a7bd5;
-  border-radius: 30px;
-  transition: left .35s ease, top .35s ease;
+  transition: left .15s ease, top .15s ease;
 }
 
 .hint {
@@ -158,6 +156,8 @@ ul li {
 .gif {
   width: 200px;
   margin: 1.5rem auto;
+    max-width: 240px;
+  margin: 1.6rem auto;
 }
 </style>
 </head>
@@ -191,6 +191,7 @@ document.addEventListener("mousemove", e => {
       `translate(${e.clientX * speed}px, ${e.clientY * speed}px) rotate(45deg)`;
   });
 });
+
 </script>
 
 <div class="container">
@@ -199,10 +200,10 @@ document.addEventListener("mousemove", e => {
   <div id="screen1" class="screen active">
     <h1>Will you be my Boyfriend, <span id="name"></span>?</h1>
 
-    <div class="buttons">
-      <button class="yes" onclick="yesFirst()">YES</button>
-      <button class="no" id="noBtn">NO 💔</button>
-    </div>
+   <div class="buttons">
+  <button class="yes" onclick="yesFirst()">YES</button>
+  <button class="no" id="noBtn">NO 💔</button>
+</div>
 
     <p class="hint">Hint: The ‘No’ button is a bit shy… 😏</p>
   </div>
@@ -212,9 +213,9 @@ document.addEventListener("mousemove", e => {
     <h1>By clicking YES you agree to:</h1>
 
     <ul>
-      <li>Unlimited cuddles, surprise hugs & soft kisses</li>
-      <li>Random chocolates, stolen hoodies & shared desserts</li>
-      <li>Listening, understanding & never invalidating your feelings</li>
+      <li>Unlimited cuddles, surprise hugs & deep french kisses</li>
+      <li>Random chocolates,care,jerking off</li>
+      <li>Having a crazy,dumb, caring Boyfriend</li>
       <li>Growing together — dreams, struggles & everything in between</li>
       <li>Being deeply loved by someone who’s serious about you</li>
     </ul>
@@ -227,10 +228,14 @@ document.addEventListener("mousemove", e => {
   <div id="screen3" class="screen">
     <h1>Yay! 🎉<br>Good Choice!</h1>
 
-    <img class="gif"
-      src="https://media.giphy.com/media/LmNwrBhejkK9EFP504/giphy.gif"
-      alt="Celebration">
-
+    <div class="gif">
+  <div class="tenor-gif-embed"
+       data-postid="16023937369633427561"
+       data-share-method="host"
+       data-aspect-ratio="1.22222"
+       data-width="100%">
+  </div>
+</div>
     <p>That’s the best decision you have ever made! ❤️</p>
   </div>
 
@@ -327,6 +332,6 @@ function resetNoPosition() {
 
 window.addEventListener("resize", resetNoPosition);
 </script>
-
+<script async src="https://tenor.com/embed.js"></script>
 </body>
 </html>
