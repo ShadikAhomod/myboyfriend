@@ -71,12 +71,18 @@ button:hover {
   color: #3a7bd5;
 }
 
+@media (max-width: 480px) {
+  .buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
 .no {
   position: fixed;              /* ← KEY: viewport-based */
   background: rgba(255,255,255,0.9);
   color: #3a7bd5;
   border-radius: 30px;
-  transition: left .35s ease, top .35s ease;
+  transition: left .15s ease, top .15s ease;
 }
 
 .hint {
@@ -263,7 +269,7 @@ function moveNoViewportSafe() {
 noBtn.addEventListener("mouseenter", moveNoViewportSafe);
 const pop = document.getElementById("popSound");
 const chime = document.getElementById("chimeSound");
-
+let noActivated = false;
 const sass = [
   "NO 💔",
   "Still NO? 😐",
@@ -345,6 +351,15 @@ function resetNoPosition() {
   noBtn.style.top = "0";
   noBtn.style.transform = "translateX(80px)";
 }
+
+/* Desktop hover */
+noBtn.addEventListener("mouseenter", moveNoSafely);
+
+/* Mobile touch */
+noBtn.addEventListener("touchstart", (e) => {
+  e.preventDefault(); // prevents accidental click
+  moveNoSafely();
+});
 
 window.addEventListener("resize", resetNoPosition);
 window.addEventListener("resize", () => {
