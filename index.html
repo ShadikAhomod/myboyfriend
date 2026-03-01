@@ -48,8 +48,7 @@ h1 {
   justify-content: center;
   align-items: center;
   gap: 16px;
-  height: 80px;            /* fixed visible zone */
-  overflow: visible;       /* allow movement but not disappearance */
+  margin-bottom: 1rem;
 }
 
 button {
@@ -73,11 +72,11 @@ button:hover {
 }
 
 .no {
-  position: absolute; /* move relative to container */
-  border-radius: 30px;
+  position: fixed;              /* ← KEY: viewport-based */
   background: rgba(255,255,255,0.9);
   color: #3a7bd5;
-  transition: left .15s ease, top .15s ease;
+  border-radius: 30px;
+  transition: left .35s ease, top .35s ease;
 }
 
 .hint {
@@ -200,7 +199,7 @@ document.addEventListener("mousemove", e => {
   <div id="screen1" class="screen active">
     <h1>Will you be my Boyfriend, <span id="name"></span>?</h1>
 
-   <div class="buttons">
+  <div class="buttons">
   <button class="yes" onclick="yesFirst()">YES</button>
   <button class="no" id="noBtn">NO 💔</button>
 </div>
@@ -245,6 +244,23 @@ document.addEventListener("mousemove", e => {
 document.getElementById("name").textContent = NAME;
 
 const noBtn = document.getElementById("noBtn");
+
+function moveNoViewportSafe() {
+  const padding = 20;
+
+  const btnRect = noBtn.getBoundingClientRect();
+
+  const maxX = window.innerWidth - btnRect.width - padding;
+  const maxY = window.innerHeight - btnRect.height - padding;
+
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
+
+  noBtn.style.left = `${Math.max(padding, x)}px`;
+  noBtn.style.top = `${Math.max(padding, y)}px`;
+}
+
+noBtn.addEventListener("mouseenter", moveNoViewportSafe);
 const pop = document.getElementById("popSound");
 const chime = document.getElementById("chimeSound");
 
@@ -331,6 +347,10 @@ function resetNoPosition() {
 }
 
 window.addEventListener("resize", resetNoPosition);
+window.addEventListener("resize", () => {
+  noBtn.style.left = "auto";
+  noBtn.style.top = "auto";
+});
 </script>
 <script async src="https://tenor.com/embed.js"></script>
 </body>
